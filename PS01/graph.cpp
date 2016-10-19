@@ -48,20 +48,21 @@ void Graph::AddEdge(string data1,string data2, float weight) {
 
 void Graph::ToGraphviz() {
     ofstream outfile;
-    outfile.open ("DotFile.txt");
+    outfile.open ("DotFile.dot");
 
     if (outfile) {
-        outfile << "graph {" << endl;
+        outfile << "digraph G {" << endl << "node [shape = circle];" << endl
+            << "node [color = blue];" << endl;
         for (int i = 0; i<node_list_.size(); i++) {
             if (node_list_[i]->edge_list_.size() == 0) {                        // single node no edge
-                outfile << "\t" << node_list_[i]->data_ << ";" << endl;
+                outfile << node_list_[i]->data_ << ";" << endl;
             } else {
                 for (int j = 0; j<node_list_[i]->edge_list_.size(); j++) {     // access all the elemets in EL
                     // accessing all data of elements.
-                    outfile << "\t" << node_list_[i]->data_ << " -> " << node_list_[i]->edge_list_[j]->data_;
+                    outfile << node_list_[i]->data_ << " -> " << node_list_[i]->edge_list_[j]->data_;
                     if (node_list_[i]->weight_list_[j] != 0)
                     {
-                        outfile << "[label=\"" << node_list_[i]->weight_list_[j] << "\",weight=\"" << node_list_[i]->weight_list_[j] <<"\"]";
+                        outfile << "[ label = " << node_list_[i]->weight_list_[j] << " ]";
                     }
 
                 outfile<< ";" << endl;
@@ -75,7 +76,7 @@ void Graph::ToGraphviz() {
     outfile.close();
 }
 
-Graph Graph::PrimMST() {
+/*Graph Graph::PrimMST() {
     Graph MST;
     Node* to_add;
     queue<Node*> all_nodes;
@@ -92,7 +93,12 @@ Graph Graph::PrimMST() {
     }
 
     return MST;
-}
+}*/
+
+
+
+
+
 
 
 

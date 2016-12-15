@@ -78,6 +78,8 @@ int main()
     G = L.PrimMST();
     G.ToGraphViz();
     
+    H = L.KruskalMST();
+    
     //L.Dijkstra();
     
     return 0;

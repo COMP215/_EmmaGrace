@@ -41,7 +41,7 @@ class Graph {
         bool IsBipartite();
         void ToGraphViz();
         Graph PrimMST();
-        //Graph Dijkstra();
+        Graph KruskalMST();
 };
 
 bool BetterEdge(std::tuple<float, Node3*, Node3*>, std::tuple<float, Node3*, Node3*>);

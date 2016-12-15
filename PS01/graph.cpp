@@ -11,6 +11,7 @@
 #include <iostream>
 #include <algorithm>
 #include <deque>
+#include <string>
 #include <fstream>
 #include "graph.h"
 using namespace std;
@@ -273,37 +274,66 @@ Graph Graph::PrimMST() {
     return G;
 }
 
-/*Graph Graph::Dijkstra() {
-    vector<Node3*> open, closed;
+Graph Graph::KruskalMST() {
+    vector<tuple<float, Node3*, Node3*>> all_edges = edge_list_;
+    vector<vector<string>> tree_nodes;
+    short i = 0;
+    short loc_1, loc_2;
+    short added = 0;
     Graph G;
     
-    for (short i = 0; i < node_list_.size(); i++) {
-        open.push_back(node_list_[i]);
-    }
-    
-    open[0]->path_cost_ = 0;
-    
-    while (!open.empty()) {
-        for (short i = 0; i < edge_list_.size(); i++) {
-            if (open[0] == get<1>(edge_list_[i])) {
-                if (get<2>(edge_list_[i])->path_cost_ == 1000000) {
-                    get<2>(edge_list_[i])->path_cost_ = get<0>(edge_list_[i]);
-                } else {
-                    Graph H;
+    // Because vectors don't have a pop front, we use descending order
+    sort(all_edges.begin(), all_edges.end(), BetterEdge);
+    reverse(all_edges.begin(), all_edges.end());
+    while (added < node_list_.size() && tree_nodes.size() != 1) {
+        loc_1 = -1;
+        loc_2 = -1;
+        vector<string> temp;
+        // Does it form a loop?
+        for (short j = 0; j < tree_nodes.size(); j++) {
+            for (short k = 0; k < tree_nodes[j].size(); k++) {
+                // Which subtree does each of the edge's nodes belong to?
+                if (get<1>(all_edges[i])->data_ == tree_nodes[j][k]) {
+                    loc_1 = j;
+                }
+                if (get<2>(all_edges[i])->data_ == tree_nodes[j][k]) {
+                    loc_2 = j;
                 }
             }
         }
-        
+        if (loc_1 == -1) {
+            // Neither node in a tree
+            if (loc_2 == -1) {
+                // add to graph
+                temp.push_back(get<1>(all_edges[i])->data_);
+                temp.push_back(get<2>(all_edges[i])->data_);
+                tree_nodes.push_back(temp);
+                added += 2;
+            // Only the second node is in a tree -- add the first to that tree
+            } else {
+                // add to graph
+                tree_nodes[loc_2].push_back(get<1>(all_edges[i])->data_);
+                added++;
+            }
+        // Only the first node is in a tree -- add the second to that tree
+        } else if (loc_2 == -1) {
+            // add to graph
+            tree_nodes[loc_1].push_back(get<2>(all_edges[i])->data_);
+            added++;
+        // They are both in separate trees -- merge them
+        } else if (loc_2 != loc_1) {
+            // add to graph
+            while (!tree_nodes[loc_2].empty()) {
+                tree_nodes[loc_1].push_back(tree_nodes[loc_2].back());
+                tree_nodes[loc_2].pop_back();
+            }
+            tree_nodes[loc_2].erase();
+        }
+        // else they are in the same tree = loop -- do nothing
+        i++;
     }
-    
-    cout << "Dijkstra" << endl;
-    
-    //for (short i = 0; i < open.size(); i++) {
-        //cout << open[i]->data_ << " " << open[i]->path_cost_ << endl;
-    }
-    
     return G;
-}*/
+}
 
 // --Extra--
 
